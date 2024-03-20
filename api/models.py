@@ -10,7 +10,8 @@ class ApiUser(AbstractBaseUser):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15, unique=True)
     agrees_to_policy = models.BooleanField(default=False)
-
+    fortuna = models.BooleanField(default=False)
+    password = models.CharField(max_length=20)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name', 'phone']
 

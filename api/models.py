@@ -18,9 +18,19 @@ class ApiUser(AbstractUser):
     #
 
 
+class User(models.Model):
+    id = models.IntegerField(primary_key=True, auto_created=True)
+    name = models.CharField(max_length=150)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+    agrees_to_policy = models.BooleanField(default=False)
+    play = models.BooleanField(default=False)
+
+
 class Product(models.Model):
     name = models.CharField(max_length=128)
-    description = models.CharField(max_length=256)
+    firstInfo = models.CharField(max_length=256)
+    secondInfo = models.CharField(max_length=256)
     image = models.ImageField(upload_to='images/', null=True, blank=True)
     exists = models.BooleanField()
 

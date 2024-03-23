@@ -1,23 +1,13 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-# from api.managers import CustomUserManager
 
-
+"""Модель только для суперпользователя, можно создать только через 'py manage.py createsuperuser'"""
 class ApiUser(AbstractUser):
     ...
-    # name = models.CharField(max_length=150)
-    # email = models.EmailField(unique=True)
-    # phone = models.CharField(max_length=15, unique=True)
-    # agrees_to_policy = models.BooleanField(default=False)
-    #
-    # USERNAME_FIELD = 'email'
-    # REQUIRED_FIELDS = ['name', 'phone']
-    #
-    # objects = CustomUserManager()
-    #
 
 
+"""Модель пользователя, который играет."""
 class User(models.Model):
     id = models.IntegerField(primary_key=True, auto_created=True)
     name = models.CharField(max_length=150)
@@ -27,7 +17,9 @@ class User(models.Model):
     play = models.BooleanField(default=False)
 
 
+"""Модель продукта."""
 class Product(models.Model):
+    #  id автоматическое
     name = models.CharField(max_length=128)
     firstInfo = models.CharField(max_length=256)
     secondInfo = models.CharField(max_length=256)

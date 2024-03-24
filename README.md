@@ -21,10 +21,10 @@ python manage.py runserver
 1. Добавить пользователя:<br/>
    - http://127.0.0.1:8000/users/
    - в Body указать { 
-     "name": "varchar(max_length=150)",
-     "email": "EmailField()",
-     "phone": "7-20 цифр без пробелов",
-     "agrees_to_policy": "булевое значение",
+   - "name": "varchar(max_length=150)",
+   - "email": "EmailField()",
+   - "phone": "7-20 цифр без пробелов",
+   - "agrees_to_policy": "булевое значение",
      
 }
    - использовать метод POST
@@ -46,17 +46,19 @@ python manage.py runserver
 - использовать метод GET
 - вернется список продуктов с такими полями:
 -  {
-        "name": "",
-        "firstInfo": "",
-        "secondInfo": "",
-        "image": ""
-    }
+- "name": "",
+- "firstInfo": "",
+- "secondInfo": "",
+- "image": ""
+-  }
 
 3. Проверить ответ пользователя:<br/>
 - http://127.0.0.1:8000/check-product/
 - в Body указать { 
-     "name": "varchar(max_length=150)",
-     "exists": "Boolean",
+   - "name": "varchar(max_length=150)",
+   - "exists": "Boolean",
 }
 - использовать метод POST
-- ответ придет в виде {"message": "правильно"} или {"message": "не правильно"}
+- ответ придет в виде
+- {"message": "правильно"}
+-  или "message": "не правильно"}

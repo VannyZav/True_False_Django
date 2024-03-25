@@ -39,9 +39,9 @@ class CheckProductView(APIView):
             try:
                 product = Product.objects.get(name=product_name)
                 if product.exists == exists:
-                    response_data = {'message': 'Правильно'}
+                    response_data = {'message': 'Правильно', 'exists': product.exists}
                 else:
-                    response_data = {'message': 'Неправильно'}
+                    response_data = {'message': 'Неправильно', 'exists': product.exists}
             except Product.DoesNotExist:
                 response_data = {'message': 'Продукт не найден'}
 

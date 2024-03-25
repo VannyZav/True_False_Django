@@ -61,7 +61,4 @@ python manage.py runserver
 }
 - например: {"product_name": "Голулат","exists": "true"}
 - использовать метод POST
-- ответ придет в виде {
--   "message": "Неправильно",
--   "exists": false
--}
+- ответ придет в виде {"message": "Неправильно", "exists": false}

@@ -13,9 +13,9 @@
    где myenv — это название вашего виртуального окружения.<br/>
 3. установите зависимости pip install -r requirements.txt
 4. в консоли зайдите в папку проекта и оттуда запустите приложение командой:<br/>
-python manage.py migrate (если выдало ошибку, возможно перед этой командой нужно выполнить python manage.py makemigrations) 
+5. python manage.py migrate (если выдало ошибку, возможно перед этой командой нужно выполнить python manage.py makemigrations) 
 6. в консоли зайдите в папку проекта и оттуда запустите приложение командой:<br/>
-python manage.py runserver 
+- python manage.py runserver 
 
 ### инструкция к API игры:
 
@@ -26,7 +26,6 @@ python manage.py runserver
      "email": "EmailField()",
      "phone": "7-20 цифр без пробелов",
      "agrees_to_policy": "булевое значение",
-     
 }
    - использовать метод POST
    - вернутся такие поля:
@@ -53,6 +52,7 @@ python manage.py runserver
         "image": ""
     }
 
+
 3. Проверить ответ пользователя:<br/>
 - http://127.0.0.1:8000/check-product/
 - в Body указать { 
@@ -62,3 +62,4 @@ python manage.py runserver
 - например: {"product_name": "Голулат","exists": "true"}
 - использовать метод POST
 - ответ придет в виде {"message": "Неправильно", "exists": false}
+

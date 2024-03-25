@@ -1,85 +1,67 @@
 from django.core.validators import RegexValidator
-from django.db import IntegrityError
 from rest_framework import serializers
-from rest_framework import validators
-from rest_framework.exceptions import ValidationError
-from api.models import ApiUser, Product
+from api.models import Product, User, ApiUser
 
 
-# class UserSerializer(serializers.Serializer):
-#     # username = serializers.CharField(max_length=128)
-#     email = serializers.EmailField(validators=[
-#         validators.UniqueValidator(ApiUser.objects.all())
-#     ])
-#     password = serializers.CharField(min_length=6, max_length=20, write_only=True)
-#     privacy_policy_agreement = serializers.BooleanField()
-#
-#     def validate_privacy_policy_agreement(self, value):
-#         if not value:
-#             raise ValidationError("You must agree to the privacy policy.")
-#         return value
-#
-#     def update(self, instance, validated_data):
-#         if email := validated_data.get("email"):
-#             instance.email = email
-#             instance.save(update_fields=["email"])
-#
-#         if password := validated_data.get("password"):
-#             instance.set_password(password)
-#             instance.save(update_fields=["password"])
-#         return instance
+"""Валидатор телефона"""
+phone_validator = RegexValidator(
+    regex=r'^\d{7,20}$',
+    message='Номер телефона должен содержать \
+    только цифры, быть длиной от 7 до 20 символов, введен без пробелов'
+)
 
-    # def create(self, validated_data):
-    #
-    #     if validated_data["privacy_policy_agreement"] != True:
-    #         raise ValidationError("You must agree to the privacy policy.")
-    #
-    #     user = ApiUser.objects.create(
-    #         # privacy_policy_egreement=validated_data["privacy_policy_agreement"],
-    #         # username=validated_data["username"],
-    #         email=validated_data["email"]
-    #     )
-    #
-    #     user.set_password(validated_data["password"])
-    #     user.save(update_fields=["password"])
-    #     return user
 
-#
-# phone_validator = RegexValidator(regex=r'^\d{7,20}$', message='Номер телефона должен содержать только цифры и быть длиной от 7 до 20 символов')
-#
-#
-# class UserSerializer(serializers.ModelSerializer):
-#     agrees_to_policy = serializers.BooleanField(write_only=True)
-#     phone = serializers.CharField(validators=[phone_validator])
-#
-#     def validate_phone(self, value):
-#         if ApiUser.objects.filter(phone=value).exists():
-#             raise serializers.ValidationError("Этот номер телефона уже зарегистрирован.")
-#         phone_validator(value)
-#         return value
-#
-#     class Meta:
-#         model = ApiUser
-#         fields = ['id', 'name', 'email', 'phone', 'agrees_to_policy']
-#
-#     def validate_agrees_to_policy(self, value):
-#         if not value:
-#             raise serializers.ValidationError("Вы должны согласиться с политикой обработки данных.")
-#         return value
-#
-#     def create(self, validated_data):
-#         agrees_to_policy = validated_data.pop('agrees_to_policy')
-#         user = ApiUser.objects.create(**validated_data, agrees_to_policy=agrees_to_policy)
-#         return user
+""" Сериализатор для создания пользователя, который участвует в игре. """
 class UserSerializer(serializers.ModelSerializer):
+    agrees_to_policy = serializers.BooleanField(write_only=True)
+    phone = serializers.CharField(validators=[phone_validator])
+
+    """ Функция валидация телефона """
+    def validate_phone(self, value):
+        phone_validator(value)
+        return value
+
+    class Meta:
+        model = User
+        fields = ['name', 'email', 'phone', 'agrees_to_policy', "play"]
+        extra_kwargs = {"play": {"read_only": True}}
+
+    """Функция проверки на согласие обработки данных."""
+    def validate_agrees_to_policy(self, value):
+        if not value:
+            raise serializers.ValidationError("Вы должны согласиться с политикой обработки данных.")
+        return value
+
+    """Метод создания пользователя: если пользователь вводит существующую почту, то остальные данные 
+    перезаписываются, а поле play переводится с False на True, что значит, что пользователь уже играл в игру"""
+    def create(self, validated_data):
+        email = validated_data.get('email')
+        user, created = User.objects.get_or_create(email=email, defaults=validated_data)
+        if not created:
+            user.name = validated_data.get('name')
+            user.phone = validated_data.get('phone')
+            user.play = True
+            user.save()
+        return user
+
+
+"""Сериализатор для суперпользователя, возможно не нужный."""
+class ApiUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ApiUser
         fields = "__all__"
         extra_kwargs = {"password": {"write_only": True}}
 
 
+"""Сериализатор Продуктов"""
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ["name", "description", "image", "exists"]
+        fields = ["name", "firstInfo", "secondInfo", "image"]
         extra_kwargs = {"id": {"read_only": True}}
+
+
+"""Сериализатор для проверки ответа пользователя"""
+class CheckProductSerializer(serializers.Serializer):
+    product_name = serializers.CharField(max_length=128)
+    exists = serializers.BooleanField()

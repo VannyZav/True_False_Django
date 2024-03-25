@@ -7,25 +7,25 @@
    git clone https://github.com/VannyZav/True_False_Django.git
 2. создайте виртуальное окружение:<br/>
    python -m venv myenv<br/>
+   py -m venv myenv   # введите на Windows, если первый вариант не сработал<br/>
    source myenv/bin/activate  # для Linux и macOS<br/>
    myenv\Scripts\activate     # для Windows<br/>
    где myenv — это название вашего виртуального окружения.<br/>
 3. установите зависимости pip install -r requirements.txt
 4. в консоли зайдите в папку проекта и оттуда запустите приложение командой:<br/>
-python manage.py migrate
-5. в консоли зайдите в папку проекта и оттуда запустите приложение командой:<br/>
-python manage.py runserver 
+5. python manage.py migrate (если выдало ошибку, возможно перед этой командой нужно выполнить python manage.py makemigrations) 
+6. в консоли зайдите в папку проекта и оттуда запустите приложение командой:<br/>
+- python manage.py runserver 
 
 ### инструкция к API игры:
 
 1. Добавить пользователя:<br/>
    - http://127.0.0.1:8000/users/
    - в Body указать { 
-   - "name": "varchar(max_length=150)",
-   - "email": "EmailField()",
-   - "phone": "7-20 цифр без пробелов",
-   - "agrees_to_policy": "булевое значение",
-     
+     "name": "varchar(max_length=150)",
+     "email": "EmailField()",
+     "phone": "7-20 цифр без пробелов",
+     "agrees_to_policy": "булевое значение",
 }
    - использовать метод POST
    - вернутся такие поля:
@@ -46,19 +46,20 @@ python manage.py runserver
 - использовать метод GET
 - вернется список продуктов с такими полями:
 -  {
-- "name": "",
-- "firstInfo": "",
-- "secondInfo": "",
-- "image": ""
--  }
+        "name": "",
+        "firstInfo": "",
+        "secondInfo": "",
+        "image": ""
+    }
+
 
 3. Проверить ответ пользователя:<br/>
 - http://127.0.0.1:8000/check-product/
 - в Body указать { 
-   - "name": "varchar(max_length=150)",
-   - "exists": "Boolean",
+     "product_name": "varchar(max_length=150)", (в том же регистре как база выдала до этого)
+     "exists": "Boolean", 
 }
+- например: {"product_name": "Голулат","exists": "true"}
 - использовать метод POST
-- ответ придет в виде
-- {"message": "правильно"}
--  или "message": "не правильно"}
+- ответ придет в виде {"message": "Неправильно", "exists": false}
+
